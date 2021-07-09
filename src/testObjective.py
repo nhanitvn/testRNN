@@ -1,11 +1,11 @@
-import keras
-from keras.datasets import imdb 
-from keras.layers import *
-from keras import *
-from keras.models import *
+from tensorflow import keras
+from tensorflow.keras.datasets import imdb 
+from tensorflow.keras.layers import *
+from tensorflow.keras import *
+from tensorflow.keras.models import *
 import copy
-import keras.backend as K
-from keras.preprocessing import sequence 
+import tensorflow.keras.backend as K
+from tensorflow.keras.preprocessing import sequence 
 from keract import *
 from utils import *
 from random import *
@@ -18,6 +18,7 @@ from saxpy.alphabet import cuts_for_asize
 from saxpy.paa import paa
 import time
 
+
 class NCTestObjectiveEvaluation:
     def __init__(self,r): 
         self.testObjective = NCTestObjective()
@@ -28,7 +29,7 @@ class NCTestObjectiveEvaluation:
     def get_activations(self,testCase):
         layer = self.testObjective.layer
         model = self.testObjective.model
-        return get_activations_single_layer(model,np.array(testCase),layerName(model,layer))
+        return get_activations(model, np.array(testCase))[layerName(model,layer)]
         
     def update_features(self,testCase):
         self.minimal = 0
@@ -77,7 +78,7 @@ class NCTestObjective:
         self.model = model
         self.layer = layer
         self.threshold = threshold
-        act = get_activations_single_layer(self.model,np.array([test]),layerName(self.model,self.layer))
+        act = get_activations(self.model, np.array([test]))[layerName(self.model,self.layer)]
         self.feature = (np.argwhere(act >= np.min(act))).tolist()
         self.setOriginalNumOfFeature()
 
@@ -93,7 +94,7 @@ class KMNCTestObjectiveEvaluation:
     def get_activations(self,testCase):
         layer = self.testObjective.layer
         model = self.testObjective.model
-        act = get_activations_single_layer(model, np.array(testCase), layerName(model, layer))
+        act = get_activations(model, np.array(testCase))[layerName(model,layer)]
         return act
 
     def update_features(self,testCase):
@@ -141,7 +142,7 @@ class KMNCTestObjective:
         self.layer = layer
         self.k = k
         self.setfeature()
-        act = get_activations_single_layer(self.model, np.array([test]), layerName(self.model, self.layer))
+        act = get_activations(self.model, np.array([test]))[layerName(self.model,self.layer)]
         self.feature = [[*range(0, self.k, 1)] for i in range(len(act.flatten()))]
         self.setOriginalNumOfFeature()
 
@@ -156,7 +157,7 @@ class NBCTestObjectiveEvaluation:
     def get_activations(self,testCase):
         layer = self.testObjective.layer
         model = self.testObjective.model
-        act = get_activations_single_layer(model, np.array(testCase), layerName(model, layer))
+        act = get_activations(model, np.array(testCase))[layerName(model,layer)]
         return act
 
     def update_features(self,testCase):
@@ -176,6 +177,13 @@ class NBCTestObjectiveEvaluation:
         print("NBC up to now: %.2f\n" % (self.coverage))
 
     def extract_feature(self,act):
+        def neuron_boudary_judge(feature,ub,lb):
+            if feature > ub:
+                return 0
+            elif feature < lb:
+                return 1
+            else:
+                return 3
         return [neuron_boudary_judge(listElem, self.testObjective.ub, self.testObjective.lb) for listElem in act]
 
     def remove_feature(self,features):
@@ -207,7 +215,7 @@ class NBCTestObjective:
         self.layer = layer
         self.ub = ub
         self.lb = lb
-        act = get_activations_single_layer(self.model, np.array([test]), layerName(self.model, self.layer))
+        act = get_activations(model, np.array([test]))[layerName(model,layer)]
         self.feature = [[*range(0, 2, 1)] for i in range(len(act.flatten()))]
         self.setOriginalNumOfFeature()
 

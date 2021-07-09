@@ -1,12 +1,13 @@
-import keras
-from keras.datasets import mnist
-from keras.layers import *
-from keras.preprocessing import image
-from keras.models import *
-from keras.utils import to_categorical
+import copy
+from tensorflow import keras
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.layers import *
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import *
+from tensorflow.keras.utils import to_categorical
 import numpy as np
 from utils import getActivationValue,layerName, hard_sigmoid
-from keract import get_activations_single_layer
+from keract import get_activations
 
 class mnistclass:
     def __init__(self):
@@ -43,7 +44,7 @@ class mnistclass:
 
 
     def load_model(self):
-        self.model = load_model('models/mnist_lstm.h5')
+        self.model = load_model('../models/mnist_lstm.h5')
         opt = keras.optimizers.Adam(lr=1e-3, decay=1e-5)
         self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
         self.model.summary()
@@ -63,7 +64,7 @@ class mnistclass:
         self.model.add(Dense(32, activation='relu'))
         self.model.add(Dense(10, activation='softmax'))
         opt = keras.optimizers.Adam(lr=1e-3, decay=1e-5)
-        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['aSCuracy'])
+        self.model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
         self.model.fit(self.X_train, self.y_train, epochs=3, validation_data=(self.X_test, self.y_test))
         self.model.save('models/mnist_lstm.h5')
 
@@ -168,7 +169,7 @@ class mnistclass:
         if layernum == 0:
             acx = test
         else:
-            acx = get_activations_single_layer(self.model, np.array(test), self.layerName(layernum - 1))
+            acx = get_activations(self.model, np.array(test))[self.layerName(layernum - 1)]
 
         units = int(int(self.model.layers[layernum].trainable_weights[0].shape[1]) / 4)
 
@@ -195,7 +196,7 @@ class mnistclass:
         if layernum == 0:
             acx = test
         else:
-            acx = get_activations_single_layer(self.model, np.array([test]), self.layerName(layernum - 1))
+            acx = get_activations(self.model, np.array([test]))[self.layerName(layernum - 1)]
 
         units = int(int(self.model.layers[layernum].trainable_weights[0].shape[1]) / 4)
         # print("No units: ", units)

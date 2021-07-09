@@ -1,12 +1,12 @@
 import numpy as np
-from keras import backend as K
+from tensorflow.keras import backend as K
 import cv2
 import os
 import shutil
 import skimage
-from keras.applications.vgg16 import VGG16, preprocess_input
-from keras.preprocessing.image import img_to_array
-from keras.optimizers import SGD
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.optimizers import SGD
 
 
 # def gaussian_noise(image, seed, mean=0, var=0.001):

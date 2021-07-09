@@ -1,16 +1,16 @@
-import keras
-from keras.datasets import imdb 
-from keras.layers import *
-from keras import *
-from keras.models import *
+from tensorflow import keras
+from tensorflow.keras.datasets import imdb 
+from tensorflow.keras.layers import *
+from tensorflow.keras import *
+from tensorflow.keras.models import *
 import copy
 import random
-import keras.backend as K
+import tensorflow.keras.backend as K
 from eda import eda
 import numpy as np
-from keras.preprocessing import sequence 
+from tensorflow.keras.preprocessing import sequence 
 from utils import getActivationValue,layerName, hard_sigmoid
-from keract import get_activations_single_layer
+from keract import get_activations
 
 class Sentiment:
     def __init__(self):
@@ -155,7 +155,7 @@ class Sentiment:
 
     # calculate the lstm hidden state and cell state manually (no dropout)
     def cal_hidden_state(self, test, layer):
-        acx = get_activations_single_layer(self.model, np.array([test]), self.layerName(0))
+        acx = get_activations(self.model, x=np.array([test]), layer_names=[self.layerName(0)])[self.layerName(0)]
         units = int(int(self.model.layers[1].trainable_weights[0].shape[1]) / 4)
         # print("No units: ", units)
         # lstm_layer = model.layers[1]

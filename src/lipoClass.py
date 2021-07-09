@@ -1,14 +1,14 @@
-from keras.layers import Dense, LSTM, Embedding, Dropout
-from keras import backend
+from tensorflow.keras.layers import Dense, LSTM, Embedding, Dropout
+from tensorflow.keras import backend
 from SmilesEnumerator import SmilesEnumerator
-from keras.models import *
+from tensorflow.keras.models import *
 import pandas as pd
 import random
 import numpy as np
 from sklearn.model_selection import train_test_split
 from utils import getActivationValue,layerName, hard_sigmoid
-from keract import get_activations_single_layer
-import keras
+from keract import get_activations
+from tensorflow import keras
 
 
 def rmse(y_true, y_pred):
@@ -139,7 +139,7 @@ class lipoClass:
 
     # calculate the lstm hidden state and cell state manually
     def cal_hidden_state(self, test,layer):
-        acx = get_activations_single_layer(self.model, np.array([test]), self.layerName(0))
+        acx = get_activations(self.model, x=np.array([test]), layer_names=[self.layerName(0)])
         units = int(int(self.model.layers[1].trainable_weights[0].shape[1]) / 4)
         # print("No units: ", units)
         # lstm_layer = model.layers[1]
